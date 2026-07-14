@@ -131,7 +131,7 @@ time_category = st.selectbox(
 # -----------------------------
 # Prediction
 # -----------------------------
-if st.button("Predict Flight Delay"):
+if st.button("🔍 Predict Flight Delay", use_container_width=True):
 
     input_data = pd.DataFrame({
         "Flight": [flight],
@@ -163,3 +163,6 @@ if st.button("Predict Flight Delay"):
         label="Prediction Confidence",
         value=f"{confidence:.2f}%"
     )
+    st.divider()
+
+st.caption("Developed by Sadia Khatun | Flight Delay Prediction System")
