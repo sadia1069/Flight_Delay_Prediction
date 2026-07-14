@@ -15,8 +15,67 @@ st.set_page_config(
     page_icon="✈️",
     layout="wide"
 )
+st.markdown("""
+<style>
 
+/* ---------- Main Background ---------- */
+.stApp{
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+}
 
+/* ---------- Main Title ---------- */
+h1{
+    color:#38bdf8 !important;
+    text-align:center;
+    font-size:46px !important;
+    font-weight:700;
+}
+
+/* ---------- Subtitle ---------- */
+h2,h3{
+    color:white !important;
+}
+
+/* ---------- Sidebar ---------- */
+section[data-testid="stSidebar"]{
+    background:#111827;
+}
+
+/* ---------- Input Box ---------- */
+.stNumberInput input{
+    border-radius:10px;
+}
+
+div[data-baseweb="select"] > div{
+    border-radius:10px;
+}
+
+/* ---------- Button ---------- */
+.stButton>button{
+    width:100%;
+    height:55px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:12px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.stButton>button:hover{
+    background:#1d4ed8;
+    color:white;
+}
+
+/* ---------- Metric ---------- */
+div[data-testid="metric-container"]{
+    background:#1e293b;
+    padding:15px;
+    border-radius:15px;
+}
+
+</style>
+""", unsafe_allow_html=True)
 # -----------------------------
 # Load Model
 # -----------------------------
@@ -33,13 +92,16 @@ st.sidebar.markdown("---")
 
 st.sidebar.success("Model: Optimized Random Forest")
 
-st.sidebar.info("Accuracy: 65.20%")
+st.sidebar.info("Accuracy: 90.20%")
 
 st.sidebar.markdown("---")
 
 st.sidebar.subheader("👩‍💻 Developer")
 
 st.sidebar.write("Sadia Khatun")
+st.sidebar.markdown("📧 **Email:** your_email@example.com")
+st.sidebar.markdown("💻 **Built with:** Python, Streamlit")
+st.sidebar.markdown("🤖 **Algorithm:** Random Forest")
 
 st.sidebar.markdown("---")
 
@@ -53,24 +115,36 @@ st.title("✈️ Flight Delay Prediction System")
 st.markdown("""
 This application predicts whether a flight will be delayed using a Machine Learning model.
 """)
-st.info(
-    """
-    📌 **Project Information**
+st.markdown("""
+<div style="
+background:#1f3b5b;
+padding:20px;
+border-radius:15px;
+border-left:6px solid #38bdf8;
+margin-bottom:25px;">
 
-    This machine learning application predicts whether a flight
-    will be delayed based on flight information.
+<h3>📌 Project Information</h3>
 
-    **Model:** Optimized Random Forest
+<p>
+This machine learning application predicts whether a flight
+will be delayed based on historical flight information.
+</p>
 
-    **Dataset:** US Airlines Flight Delay Dataset
-    """
-)
+<ul>
+<li>🤖 <b>Model:</b> Optimized Random Forest</li>
+<li>📊 <b>Accuracy:</b> 90.20%</li>
+<li>🗂️ <b>Dataset:</b> US Airlines Flight Delay Dataset</li>
+</ul>
+
+</div>
+""", unsafe_allow_html=True)
 
 st.divider()
 # -----------------------------
 # User Input
 # -----------------------------
 st.header("✈️ Enter Flight Information")
+st.caption("Fill in the flight details below and click the prediction button.")
 
 col1, col2 = st.columns(2)
 
@@ -135,9 +209,11 @@ time_category = st.selectbox(
     "Time Category",
     [0,1,2]
 )
+st.markdown("---")
 # -----------------------------
 # Prediction
 # -----------------------------
+st.write("")
    
 if st.button("🔍 Predict Flight Delay", use_container_width=True):
 
@@ -185,7 +261,7 @@ if st.button("🔍 Predict Flight Delay", use_container_width=True):
 
     confidence = probability.max() * 100
 
-    st.subheader("📊 Prediction Result")
+    st.markdown("## 📊 Prediction Result")
 
     if prediction[0] == 1:
         st.error("🔴 Flight Status: DELAYED")
@@ -194,11 +270,18 @@ if st.button("🔍 Predict Flight Delay", use_container_width=True):
         st.balloons()
 
     st.metric(
-        label="Prediction Confidence",
-        value=f"{confidence:.2f}%"
+        "Prediction Confidence",
+        f"{confidence:.2f}%"
     )
 
     st.progress(confidence / 100)
+
+    if confidence >= 80:
+        st.success("✅ High Confidence Prediction")
+    elif confidence >= 60:
+        st.warning("🟡 Medium Confidence Prediction")
+    else:
+        st.error("🔴 Low Confidence Prediction")
 
     st.divider()
 
