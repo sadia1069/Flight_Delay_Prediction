@@ -3,6 +3,10 @@ import pandas as pd
 import numpy as np
 import joblib
 
+
+
+
+
 # -----------------------------
 # Page Configuration
 # -----------------------------
@@ -12,10 +16,14 @@ st.set_page_config(
     layout="wide"
 )
 
+
 # -----------------------------
 # Load Model
 # -----------------------------
 model = joblib.load("Flight_Delay_Model.pkl")
+
+airport_from_mapping = joblib.load("airport_from_mapping.pkl")
+airport_to_mapping = joblib.load("airport_to_mapping.pkl")
 # -----------------------------
 # Sidebar
 # -----------------------------
@@ -99,29 +107,28 @@ with col1:
 
 with col2:
 
-    airline = st.number_input(
-        "Airline (Encoded)",
-        min_value=0,
-        value=0
+    airline = st.selectbox(
+        "✈️ Airline",
+        [
+            "DL","OO","B6","US","FL","WN","CO","AA",
+            "YV","EV","XE","9E","OH","UA","MQ",
+            "AS","F9","HA"
+        ]
     )
 
-    airport_from = st.number_input(
-        "Airport From (Encoded)",
-        min_value=0,
-        value=0
-    )
-
-    airport_to = st.number_input(
-        "Airport To (Encoded)",
-        min_value=0,
-        value=0
-    )
+    airport_from = st.selectbox(
+    "🛫 Airport From",
+    list(airport_from_mapping.keys())
+)
+    airport_to = st.selectbox(
+    "🛬 Airport To",
+    list(airport_to_mapping.keys())
+)
 
     length_category = st.selectbox(
         "Length Category",
         [0,1,2]
     )
-
     
 
 time_category = st.selectbox(
@@ -131,7 +138,33 @@ time_category = st.selectbox(
 # -----------------------------
 # Prediction
 # -----------------------------
+   
 if st.button("🔍 Predict Flight Delay", use_container_width=True):
+
+    airline_mapping = {
+        "9E": 0,
+        "AA": 1,
+        "AS": 2,
+        "B6": 3,
+        "CO": 4,
+        "DL": 5,
+        "EV": 6,
+        "F9": 7,
+        "FL": 8,
+        "HA": 9,
+        "MQ": 10,
+        "OH": 11,
+        "OO": 12,
+        "UA": 13,
+        "US": 14,
+        "WN": 15,
+        "XE": 16,
+        "YV": 17
+    }
+
+    airline = airline_mapping[airline]
+    airport_from = airport_from_mapping[airport_from]
+    airport_to = airport_to_mapping[airport_to]
 
     input_data = pd.DataFrame({
         "Flight": [flight],
@@ -158,11 +191,15 @@ if st.button("🔍 Predict Flight Delay", use_container_width=True):
         st.error("🔴 Flight Status: DELAYED")
     else:
         st.success("🟢 Flight Status: ON TIME")
+        st.balloons()
 
     st.metric(
         label="Prediction Confidence",
         value=f"{confidence:.2f}%"
     )
+
+    st.progress(confidence / 100)
+
     st.divider()
 
 st.caption("Developed by Sadia Khatun | Flight Delay Prediction System")
