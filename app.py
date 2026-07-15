@@ -3,286 +3,631 @@ import pandas as pd
 import numpy as np
 import joblib
 
+# ---------------------------------
+# Page Config
+# ---------------------------------
 
-
-
-
-# -----------------------------
-# Page Configuration
-# -----------------------------
 st.set_page_config(
     page_title="Flight Delay Prediction",
     page_icon="✈️",
     layout="wide"
 )
+
+# ---------------------------------
+# Custom CSS
+# ---------------------------------
+
 st.markdown("""
 <style>
 
-/* ---------- Main Background ---------- */
+/* =========================
+   MAIN
+========================= */
+
 .stApp{
-    background: linear-gradient(135deg, #0f172a, #1e293b);
+    background:#111827;
+    color:white;
 }
 
-/* ---------- Main Title ---------- */
-h1{
-    color:#38bdf8 !important;
-    text-align:center;
-    font-size:46px !important;
-    font-weight:700;
-}
+/* =========================
+   SIDEBAR
+========================= */
 
-/* ---------- Subtitle ---------- */
-h2,h3{
-    color:white !important;
-}
-
-/* ---------- Sidebar ---------- */
 section[data-testid="stSidebar"]{
     background:#111827;
 }
 
-/* ---------- Input Box ---------- */
+section[data-testid="stSidebar"] *{
+    color:white !important;
+}
+
+/* =========================
+   TITLES
+========================= */
+
+h1{
+    color:#4FC3F7 !important;
+    font-weight:700;
+}
+
+h2,h3{
+    color:white !important;
+}
+
+/* =========================
+   LABELS
+========================= */
+
+label{
+    color:white !important;
+    font-size:16px !important;
+    font-weight:600 !important;
+}
+
+/* =========================
+   NUMBER INPUT
+========================= */
+
 .stNumberInput input{
-    border-radius:10px;
+
+    background:#1F2937 !important;
+    color:white !important;
+
+    border:2px solid #334155 !important;
+
+    border-radius:12px !important;
+
+    transition:.3s;
 }
 
-div[data-baseweb="select"] > div{
-    border-radius:10px;
+.stNumberInput input:hover{
+
+    border:2px solid #38BDF8 !important;
+
 }
 
-/* ---------- Button ---------- */
+.stNumberInput input:focus{
+
+    border:2px solid #38BDF8 !important;
+
+    box-shadow:0 0 12px rgba(56,189,248,.45) !important;
+
+}
+
+/* =========================
+   SELECT BOX
+========================= */
+
+div[data-baseweb="select"]>div{
+
+    background:#1F2937 !important;
+
+    color:white !important;
+
+    border:2px solid #334155 !important;
+
+    border-radius:12px !important;
+
+    transition:.3s;
+
+}
+
+div[data-baseweb="select"]>div:hover{
+
+    border:2px solid #38BDF8 !important;
+
+}
+
+div[data-baseweb="select"]>div:focus-within{
+
+    border:2px solid #38BDF8 !important;
+
+    box-shadow:0 0 12px rgba(56,189,248,.45);
+
+}
+
+/* =========================
+   BUTTON
+========================= */
+
 .stButton>button{
+
     width:100%;
-    height:55px;
-    background:#2563eb;
-    color:white;
+
+    height:58px;
+
     border:none;
+
     border-radius:12px;
+
+    background:linear-gradient(90deg,#2563EB,#06B6D4);
+
+    color:white;
+
     font-size:18px;
+
     font-weight:bold;
+
+    transition:.3s;
+
 }
 
 .stButton>button:hover{
-    background:#1d4ed8;
-    color:white;
+
+    background:linear-gradient(90deg,#1D4ED8,#0891B2);
+
+    transform:scale(1.02);
+
 }
 
-/* ---------- Metric ---------- */
+/* =========================
+   METRIC CARD
+========================= */
+
 div[data-testid="metric-container"]{
-    background:#1e293b;
-    padding:15px;
+
+    background:#1E293B;
+
+    border:1px solid #334155;
+
     border-radius:15px;
+
+    padding:18px;
+
 }
 
+/* =========================
+   PROGRESS BAR
+========================= */
+
+.stProgress>div>div>div>div{
+
+    background:#38BDF8;
+
+}
+
+/* =========================
+   EXPANDER
+========================= */
+
+details{
+
+    background:#111827;
+
+    border:1px solid #334155;
+
+    border-radius:12px;
+
+    padding:10px;
+
+}
+
+/* =========================
+   SUCCESS / ERROR
+========================= */
+
+div[data-baseweb="notification"]{
+
+    border-radius:12px;
+
+}
+
+/* =========================
+   HORIZONTAL LINE
+========================= */
+
+hr{
+
+    border:1px solid #334155;
+
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#1F2937;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#38BDF8;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#0EA5E9;
+
+}
+/* ===========================
+   DROPDOWN MENU
+=========================== */
+
+/* Closed box */
+div[data-baseweb="select"] > div{
+    background:#1F2937 !important;
+    color:white !important;
+    border:2px solid #38BDF8 !important;
+    border-radius:12px !important;
+}
+
+/* Dropdown list */
+div[role="listbox"]{
+    background:#1F2937 !important;
+    border:2px solid #38BDF8 !important;
+    border-radius:12px !important;
+}
+
+/* Every option */
+div[role="option"]{
+    background:#1F2937 !important;
+    color:white !important;
+}
+
+/* Hover option */
+div[role="option"]:hover{
+    background:#2563EB !important;
+    color:white !important;
+}
+
+/* Selected option */
+div[aria-selected="true"]{
+    background:#38BDF8 !important;
+    color:black !important;
+}
+
+/* Arrow */
+svg{
+    color:#38BDF8 !important;
+}
+/* ===========================
+   STREAMLIT 1.59 SELECTBOX
+=========================== */
+
+/* Closed Select Box */
+[data-baseweb="select"]{
+    background:#1F2937 !important;
+    border-radius:12px !important;
+}
+
+[data-baseweb="select"] > div{
+    background:#1E3A5F !important;
+    border:2px solid #38BDF8 !important;
+    border-radius:12px !important;
+}
+
+/* Value */
+[data-baseweb="select"] span{
+    color:white !important;
+    font-weight:500;
+}
+
+/* Arrow */
+[data-baseweb="select"] svg{
+    color:#38BDF8 !important;
+}
+
+/* Popup Menu */
+div[role="listbox"]{
+    background:#1E3A5F !important;
+    border:2px solid #38BDF8 !important;
+}
+
+/* Option */
+div[role="option"]{
+    background:#1E3A5F !important;
+    color:white !important;
+}
+
+/* Hover */
+div[role="option"]:hover{
+    background:#2563EB !important;
+}
+
+/* Selected */
+div[aria-selected="true"]{
+    background:#38BDF8 !important;
+    color:black !important;
+}
+header[data-testid="stHeader"]{
+    background:#1F3B5B !important;
+}
+
+div[data-testid="stToolbar"]{
+    background:#1F3B5B !important;
+}
+
+.stApp{
+    background:#1F3B5B;
+}
 </style>
 """, unsafe_allow_html=True)
-# -----------------------------
+
+# ---------------------------------
 # Load Model
-# -----------------------------
+# ---------------------------------
+
 model = joblib.load("Flight_Delay_Model.pkl")
 
 airport_from_mapping = joblib.load("airport_from_mapping.pkl")
 airport_to_mapping = joblib.load("airport_to_mapping.pkl")
-# -----------------------------
+
+# ---------------------------------
 # Sidebar
-# -----------------------------
+# ---------------------------------
+
 st.sidebar.title("✈️ Flight Delay Prediction")
 
 st.sidebar.markdown("---")
 
-st.sidebar.success("Model: Optimized Random Forest")
+st.sidebar.success("Model : Optimized Random Forest")
 
-st.sidebar.info("Accuracy: 90.20%")
+st.sidebar.info("Accuracy : 65.20%")
 
 st.sidebar.markdown("---")
 
 st.sidebar.subheader("👩‍💻 Developer")
 
-st.sidebar.write("Sadia Khatun")
-st.sidebar.markdown("📧 **Email:** your_email@example.com")
+st.sidebar.markdown("### **Sadia Khatun**")
+
+st.sidebar.markdown("📧 **sadia2305341069@diu.edu.bd**")
+
 st.sidebar.markdown("💻 **Built with:** Python, Streamlit")
+
 st.sidebar.markdown("🤖 **Algorithm:** Random Forest")
+st.sidebar.markdown("📊 Dataset: US Airlines")
+
+
+
+
 
 st.sidebar.markdown("---")
 
 st.sidebar.caption("Machine Learning Project")
 
-# -----------------------------
-# Title
-# -----------------------------
+# ---------------------------------
+# Main Title
+# ---------------------------------
+
 st.title("✈️ Flight Delay Prediction System")
 
-st.markdown("""
-This application predicts whether a flight will be delayed using a Machine Learning model.
-""")
+st.write(
+    "Predict whether a flight will be delayed using Machine Learning."
+)
+
 st.markdown("""
 <div style="
-background:#1f3b5b;
+background:#1E293B;
 padding:20px;
 border-radius:15px;
-border-left:6px solid #38bdf8;
-margin-bottom:25px;">
+border-left:6px solid #38BDF8;
+">
 
-<h3>📌 Project Information</h3>
+### 📌 Project Information
 
-<p>
-This machine learning application predicts whether a flight
-will be delayed based on historical flight information.
-</p>
+This application predicts flight delay using an Optimized Random Forest Model.
 
-<ul>
-<li>🤖 <b>Model:</b> Optimized Random Forest</li>
-<li>📊 <b>Accuracy:</b> 90.20%</li>
-<li>🗂️ <b>Dataset:</b> US Airlines Flight Delay Dataset</li>
-</ul>
+- 🤖 Model : Random Forest
+- 📊 Accuracy : 65.20%
+- 📁 Dataset : US Airlines Flight Delay Dataset
 
 </div>
 """, unsafe_allow_html=True)
 
 st.divider()
-# -----------------------------
+# ---------------------------------
 # User Input
-# -----------------------------
+# ---------------------------------
+
 st.header("✈️ Enter Flight Information")
-st.caption("Fill in the flight details below and click the prediction button.")
+
+st.caption("Fill in the flight information below.")
 
 col1, col2 = st.columns(2)
+
+# ---------------- Left Column ----------------
 
 with col1:
 
     flight = st.number_input(
-        "Flight Number",
+        "✈️ Flight Number",
         min_value=1,
         value=100
     )
 
     time = st.number_input(
-        "Departure Time",
+        "🕒 Departure Time (HHMM)",
         min_value=0,
         max_value=2359,
         value=900
     )
 
     length = st.number_input(
-        "Flight Length (Minutes)",
+        "📏 Flight Length (Minutes)",
         min_value=10,
         value=120
     )
 
     day = st.selectbox(
-        "Day of Week",
+        "📅 Day of Week",
         [1,2,3,4,5,6,7]
     )
 
     weekend = st.selectbox(
-        "Weekend",
-        [0,1]
+        "🌴 Weekend",
+        [0,1],
+        format_func=lambda x: "Yes" if x==1 else "No"
     )
+
+# ---------------- Right Column ----------------
 
 with col2:
 
     airline = st.selectbox(
         "✈️ Airline",
         [
-            "DL","OO","B6","US","FL","WN","CO","AA",
-            "YV","EV","XE","9E","OH","UA","MQ",
-            "AS","F9","HA"
+            "DL","OO","B6","US","FL","WN",
+            "CO","AA","YV","EV","XE","9E",
+            "OH","UA","MQ","AS","F9","HA"
         ]
     )
 
     airport_from = st.selectbox(
-    "🛫 Airport From",
-    list(airport_from_mapping.keys())
-)
+        "🛫 Airport From",
+        sorted(list(airport_from_mapping.keys()))
+    )
+
     airport_to = st.selectbox(
-    "🛬 Airport To",
-    list(airport_to_mapping.keys())
-)
+        "🛬 Airport To",
+        sorted(list(airport_to_mapping.keys()))
+    )
 
     length_category = st.selectbox(
-        "Length Category",
+        "📏 Length Category",
         [0,1,2]
     )
-    
 
-time_category = st.selectbox(
-    "Time Category",
-    [0,1,2]
-)
+    time_category = st.selectbox(
+        "🕒 Time Category",
+        [0,1,2]
+    )
+
 st.markdown("---")
-# -----------------------------
-# Prediction
-# -----------------------------
-st.write("")
-   
-if st.button("🔍 Predict Flight Delay", use_container_width=True):
 
+st.write("")
+
+# ---------------------------------
+# Prediction Button
+# ---------------------------------
+
+predict_btn = st.button(
+    "🔍 Predict Flight Delay",
+    use_container_width=True
+)
+# ---------------------------------
+# Prediction
+# ---------------------------------
+
+if predict_btn:
+
+    # Airline Encoding
     airline_mapping = {
-        "9E": 0,
-        "AA": 1,
-        "AS": 2,
-        "B6": 3,
-        "CO": 4,
-        "DL": 5,
-        "EV": 6,
-        "F9": 7,
-        "FL": 8,
-        "HA": 9,
-        "MQ": 10,
-        "OH": 11,
-        "OO": 12,
-        "UA": 13,
-        "US": 14,
-        "WN": 15,
-        "XE": 16,
-        "YV": 17
+        "9E":0,
+        "AA":1,
+        "AS":2,
+        "B6":3,
+        "CO":4,
+        "DL":5,
+        "EV":6,
+        "F9":7,
+        "FL":8,
+        "HA":9,
+        "MQ":10,
+        "OH":11,
+        "OO":12,
+        "UA":13,
+        "US":14,
+        "WN":15,
+        "XE":16,
+        "YV":17
     }
 
     airline = airline_mapping[airline]
+
     airport_from = airport_from_mapping[airport_from]
     airport_to = airport_to_mapping[airport_to]
 
+    # Create DataFrame
     input_data = pd.DataFrame({
-        "Flight": [flight],
-        "Time": [time],
-        "Length": [length],
-        "Airline": [airline],
-        "AirportFrom": [airport_from],
-        "AirportTo": [airport_to],
-        "DayOfWeek": [day],
-        "Weekend": [weekend],
-        "Length_Category": [length_category],
-        "Time_Category": [time_category]
+
+        "Flight":[flight],
+        "Time":[time],
+        "Length":[length],
+        "Airline":[airline],
+        "AirportFrom":[airport_from],
+        "AirportTo":[airport_to],
+        "DayOfWeek":[day],
+        "Weekend":[weekend],
+        "Length_Category":[length_category],
+        "Time_Category":[time_category]
+
     })
+
+    # Prediction
 
     prediction = model.predict(input_data)
 
     probability = model.predict_proba(input_data)
 
-    confidence = probability.max() * 100
+    confidence = probability.max()*100
 
-    st.markdown("## 📊 Prediction Result")
+    st.markdown("---")
 
-    if prediction[0] == 1:
-        st.error("🔴 Flight Status: DELAYED")
-    else:
-        st.success("🟢 Flight Status: ON TIME")
-        st.balloons()
+    st.subheader("📊 Prediction Result")
 
-    st.metric(
-        "Prediction Confidence",
-        f"{confidence:.2f}%"
-    )
+    col1, col2 = st.columns(2)
 
-    st.progress(confidence / 100)
+    with col1:
 
-    if confidence >= 80:
-        st.success("✅ High Confidence Prediction")
-    elif confidence >= 60:
-        st.warning("🟡 Medium Confidence Prediction")
-    else:
-        st.error("🔴 Low Confidence Prediction")
+        if prediction[0] == 1:
+            st.error("🔴 Flight Status : DELAYED")
+        else:
+            st.success("🟢 Flight Status : ON TIME")
+            st.balloons()
 
-    st.divider()
+    with col2:
 
-st.caption("Developed by Sadia Khatun | Flight Delay Prediction System")
+        st.metric(
+            "Prediction Confidence",
+            f"{confidence:.2f}%"
+        )
+
+        st.progress(confidence / 100)
+
+        if confidence >= 90:
+            st.success("✅ Excellent Confidence")
+
+        elif confidence >= 75:
+            st.info("🟢 High Confidence")
+
+        elif confidence >= 60:
+            st.warning("🟡 Medium Confidence")
+
+        else:
+            st.error("🔴 Low Confidence")
+
+    st.markdown("---")
+
+    with st.expander("📄 View Input Data"):
+        st.dataframe(input_data, use_container_width=True)
+# Footer
+# ---------------------------------
+
+st.markdown("---")
+
+st.markdown(
+"""
+<div style="text-align:center;color:gray">
+
+Made with ❤️ using <b>Python</b>, <b>Streamlit</b> & <b>Machine Learning</b>
+
+<br><br>
+
+© 2026 Sadia Khatun
+
+</div>
+""",
+unsafe_allow_html=True
+)
