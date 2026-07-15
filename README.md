@@ -67,7 +67,7 @@ The model was trained using historical US airline flight delay data and optimize
 
 **Model Accuracy**
 
-**90.20%**
+**65.20%**
 
 ---
 
@@ -124,15 +124,7 @@ https://flightdelayprediction-gqu3cwp2jgfbkg9pzbfw7j.streamlit.app/
 
 **Sadia Khatun**
 
-📧 Email:
-
-sadia2305341069@diu.edu.bd
-
-📱 Phone:
-
-01303751398
-
----
+📧 Email:sadia2305341069@diu.edu.bd
 
 ## 📄 License
 
